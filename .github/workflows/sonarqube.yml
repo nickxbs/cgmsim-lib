@@ -21,6 +21,10 @@ jobs:
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}   
+      - name: Run tests and generate coverage report
+        run: npm run test -- --coverage --coverageReporters lcov
+        env:
+          CI: true          
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -35,7 +39,3 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.coverage.exclusions=**/node_modules/**,**/old/**,coverage/**,**/test/**
             -Dsonar.exclusions=**/node_modules/**,**/old/**,coverage/**,**/test/**
-      - name: Run tests and generate coverage report
-        run: npm run test -- --coverage --coverageReporters lcov
-        env:
-          CI: true
