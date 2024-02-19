@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-
-
 jobs:
   build:
     name: Build
@@ -19,9 +17,18 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=<your-organization>
+            -Dsonar.projectKey=<your-project-key>
+            -Dsonar.sources=.
+            -Dsonar.tests=.
+            -Dsonar.test.inclusions=**/test/**/*
+            -Dsonar.test.exclusions=**/node_modules/**,**/old/**
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.coverage.exclusions=**/node_modules/**,**/test/**,coverage/**
+            -Dsonar.exclusions=**/node_modules/**,coverage/**,**/test/**
+      - name: Run tests and generate coverage report
+        run: npm run test -- --coverage --coverageReporters lcov
+        env:
+          CI: true
