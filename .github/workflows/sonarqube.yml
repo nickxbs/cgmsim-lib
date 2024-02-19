@@ -31,13 +31,11 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=nickxbs_cgmsim-lib_67b5c1aa-fc5c-4f39-8384-f0ffb2356381
-            -Dsonar.sources=.
-            -Dsonar.exclusions=**/node_modules/**,test/**, old/**
-            -Dsonar.cpd.exclusions=**/node_modules/**,test/**, old/**
-            -Dsonar.tests=**/test/**
+            -Dsonar.organization=nickxbs_cgmsim-lib_67b5c1aa-fc5c-4f39-8384-f0ffb2356381
+            -Dsonar.sources=./src
+            -Dsonar.tests=./test
             -Dsonar.test.inclusions=**/test/**/*
-            -Dsonar.test.exclusions=**/node_modules/**,**/old/**,**/test/**
+            -Dsonar.test.exclusions=**/node_modules/**,**/old/**
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=**/node_modules/**,**/test/**,coverage/**
-            -Dsonar.exclusions=**/node_modules/**,coverage/**,**/test/**
+            -Dsonar.coverage.exclusions=**/node_modules/**,**/old/**,coverage/**,**/test/**
+            -Dsonar.exclusions=**/node_modules/**,**/old/**,coverage/**,**/test/**
