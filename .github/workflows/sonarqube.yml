@@ -9,24 +9,22 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     permissions: read-all
-    steps:
+    steps:    
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}   
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=nickxbs_cgmsim-lib_67b5c1aa-fc5c-4f39-8384-f0ffb2356381
-            -Dsonar.sources=.
-            -Dsonar.tests=.
-            -Dsonar.test.inclusions=**/test/**/*
-            -Dsonar.test.exclusions=**/node_modules/**,**/old/**,**/test/**
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=**/node_modules/**,**/test/**,coverage/**
-            -Dsonar.exclusions=**/node_modules/**,coverage/**,**/test/**
       - name: Run tests and generate coverage report
         run: npm run test -- --coverage --coverageReporters lcov
         env:
